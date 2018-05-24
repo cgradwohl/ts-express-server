@@ -1,5 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import User from '../models/User';
+import * as bcrypt from 'bcrypt';
 
 
 class UserRouter {
@@ -53,35 +54,43 @@ class UserRouter {
 
     
     public CreateUser(req: Request, res: Response): void {
-        const name: string = req.body.name;
+        const firstname: string = req.body.firstname;
+        const lastname: string = req.body.lastname;
         const username: string = req.body.username;
         const email: string = req.body.email;
-        const password: string = req.body.password;
         const posts: string[] = req.body.posts;
-
-        const user = new User({
-            name,
-            username,
-            email,
-            password,
-            posts      
+        
+        bcrypt.hash(req.body.password, 10, (err, hash) => {
+            if(err) {
+                return res.status(500).json({
+                    error: err
+                });
+            } else {
+                const user = new User({
+                    firstname,
+                    lastname,
+                    username,
+                    email,
+                    password: hash,
+                    posts      
+                });
+                user.save()
+                    .then((data) => {
+                        const status = res.statusCode
+                        res.json({
+                            status,
+                            data
+                        });
+                    })
+                    .catch((err) => {
+                        const status = res.statusCode
+                        res.json({
+                            status,
+                            err
+                        });
+                    });
+            }
         });
-
-        user.save()
-            .then((data) => {
-                const status = res.statusCode
-                res.json({
-                    status,
-                    data
-                });
-            })
-            .catch((err) => {
-                const status = res.statusCode
-                res.json({
-                    status,
-                    err
-                });
-            });
     }
 
     

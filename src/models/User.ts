@@ -4,7 +4,12 @@ import { Schema, model } from 'mongoose';
 let UserSchema: Schema = new Schema({
     createdAt: Date,
     updatedAt: Date,
-    name: {
+    firstname: {
+        type: String,
+        default: '',
+        required: true
+    },
+    lastname: {
         type: String,
         default: '',
         required: true

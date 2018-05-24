@@ -1,5 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var dotenv = require("dotenv");
+dotenv.config();
 var express = require("express");
 var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
@@ -7,10 +9,8 @@ var compression = require("compression");
 var logger = require("morgan");
 var helmet = require("helmet");
 var cors = require("cors");
-// import routers 
 var PostRouter_1 = require("./router/PostRouter");
 var UserRouter_1 = require("./router/UserRouter");
-// Server CLass
 var Server = /** @class */ (function () {
     function Server() {
         this.app = express();
@@ -21,7 +21,7 @@ var Server = /** @class */ (function () {
         // setup mongoose
         var MONGO_URI = 'mongodb://localhost/tes';
         mongoose.connect(MONGO_URI || process.env.MONGOOD_URI);
-        // config
+        // app config
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(helmet());
@@ -37,5 +37,4 @@ var Server = /** @class */ (function () {
     };
     return Server;
 }());
-// export Server class 
 exports.default = new Server().app;

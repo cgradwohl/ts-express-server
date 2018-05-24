@@ -4,7 +4,12 @@ var mongoose_1 = require("mongoose");
 var UserSchema = new mongoose_1.Schema({
     createdAt: Date,
     updatedAt: Date,
-    name: {
+    firstname: {
+        type: String,
+        default: '',
+        required: true
+    },
+    lastname: {
         type: String,
         default: '',
         required: true

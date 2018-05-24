@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var User_1 = require("../models/User");
+var bcrypt = require("bcrypt");
 var UserRouter = /** @class */ (function () {
     function UserRouter() {
         this.router = express_1.Router();
@@ -44,32 +45,42 @@ var UserRouter = /** @class */ (function () {
         });
     };
     UserRouter.prototype.CreateUser = function (req, res) {
-        var name = req.body.name;
+        var firstname = req.body.firstname;
+        var lastname = req.body.lastname;
         var username = req.body.username;
         var email = req.body.email;
-        var password = req.body.password;
         var posts = req.body.posts;
-        var user = new User_1.default({
-            name: name,
-            username: username,
-            email: email,
-            password: password,
-            posts: posts
-        });
-        user.save()
-            .then(function (data) {
-            var status = res.statusCode;
-            res.json({
-                status: status,
-                data: data
-            });
-        })
-            .catch(function (err) {
-            var status = res.statusCode;
-            res.json({
-                status: status,
-                err: err
-            });
+        bcrypt.hash(req.body.password, 10, function (err, hash) {
+            if (err) {
+                return res.status(500).json({
+                    error: err
+                });
+            }
+            else {
+                var user = new User_1.default({
+                    firstname: firstname,
+                    lastname: lastname,
+                    username: username,
+                    email: email,
+                    password: hash,
+                    posts: posts
+                });
+                user.save()
+                    .then(function (data) {
+                    var status = res.statusCode;
+                    res.json({
+                        status: status,
+                        data: data
+                    });
+                })
+                    .catch(function (err) {
+                    var status = res.statusCode;
+                    res.json({
+                        status: status,
+                        err: err
+                    });
+                });
+            }
         });
     };
     UserRouter.prototype.UpdateUser = function (req, res) {
